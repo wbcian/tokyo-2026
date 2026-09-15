@@ -1,3 +1,769 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>東京 2026｜準備中</title></head>
-<body style="font-family:system-ui;padding:2rem;line-height:1.7"><h1>東京 2026 行程</h1><p>頁面準備中，稍後重新整理。</p></body></html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0F4C81">
+<meta name="apple-mobile-web-app-title" content="東京">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>東京 2026｜行程與票券</title>
+<style>
+/* ===== tokens（沿 kyoto app：紙・墨・線；主色換成東京藍） ===== */
+:root {
+  color-scheme: light dark;
+  --bg:#FBF7EF; --surface:#FFFFFF; --ink:#2B2A28; --ink-2:#6E6658;
+  --line:#EBE2CE; --line-strong:#D8CBAF;
+  --accent:#A31F2D; --green:#3E6B52; --amber:#8A5F0A;
+  --indigo:#2A467F; --night:#0F4C81; --night-ink:#EAF2FA; --band:#EFEADD;
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem;
+  --radius:8px; --radius-card:11px; --radius-chip:9px; --radius-pill:999px;
+  --tap:3rem; --btn-edge:#8C7B5A; --wrap:40rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#191714; --surface:#23201C; --ink:#EAE3D6; --ink-2:#B3AA98;
+    --line:#3A362F; --line-strong:#5C5544; --btn-edge:#877D68;
+    --accent:#D96A5B; --green:#6FAE8C; --amber:#D2A94E;
+    --indigo:#8FA8DC; --night:#0B2E4F; --night-ink:#EAF2FA; --band:#26221C;
+  }
+}
+/* ===== base ===== */
+html { font: -apple-system-body; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "PingFang TC", "Hiragino Sans", "Noto Sans TC", "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif;
+  font-size: 1rem; line-height: 1.7; background: var(--bg); color: var(--ink); overflow-wrap: break-word; line-break: strict; }
+main { max-width: var(--wrap); width: 100%; margin-inline: auto; padding: 0 var(--sp-4) 10.5rem; }
+section[id] { scroll-margin-top: 9rem; }
+h1,h2,h3,h4 { line-height: 1.35; margin: 0; }
+a { color: var(--indigo); }
+a[href^="tel:"] { display: inline-flex; align-items: center; min-height: var(--tap); padding: .4em .6em; font-weight: 600; }
+time, .num { font-variant-numeric: tabular-nums; }
+.ico { display: inline-block; width: 1.4em; text-align: center; }
+code { font-family: ui-monospace, Menlo, monospace; font-size: .9em; background: color-mix(in srgb, var(--ink) 7%, transparent); padding: .05em .35em; border-radius: 4px; }
+/* ===== header ===== */
+.top { position: static; z-index: 30; background: var(--night); color: var(--night-ink); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+@media (min-height: 34em) {
+  .top { position: fixed; top: 0; left: 0; right: 0; }
+  body { padding-top: var(--top-h, 8.5rem); }
+  section[id] { scroll-margin-top: calc(var(--top-h, 8.5rem) + 8px); }
+}
+.brand { display: flex; flex-wrap: wrap; row-gap: var(--sp-2); align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4) var(--sp-2); max-width: var(--wrap); margin-inline: auto; }
+.brand h1 { font-size: 1.1875rem; font-weight: 600; letter-spacing: .04em; }
+.brand h1 .yr { font-size: .78em; opacity: .85; font-weight: 500; margin-left: .35em; white-space: nowrap; }
+#btn-today { margin-left: auto; min-height: var(--tap); padding: .3em 1.05em; font: inherit; font-size: .8125rem; font-weight: 600;
+  color: var(--night); background: var(--night-ink); border: 0; border-radius: var(--radius-pill); cursor: pointer; touch-action: manipulation; white-space: nowrap; }
+#btn-today[hidden] { display: none; }
+.daystrip { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-2) var(--sp-4) var(--sp-3); max-width: var(--wrap); margin-inline: auto; -webkit-overflow-scrolling: touch; }
+.chip { flex: 1 0 auto; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 3.4rem; min-height: var(--tap); padding: .25em .6em;
+  border: 1px solid rgba(234,242,250,.32); border-radius: var(--radius-chip); color: var(--night-ink); text-decoration: none; text-align: center; font-size: .84375rem; line-height: 1.3; touch-action: manipulation; }
+.chip .d { font-weight: 600; white-space: nowrap; }
+.chip .w { font-size: .78em; opacity: .85; white-space: nowrap; }
+.chip[aria-current="true"] { background: var(--night-ink); color: var(--night); border-color: var(--night-ink); }
+/* ===== 緊急卡（零 JS、不用解鎖、每個分頁都在） ===== */
+.sos { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--sp-4) var(--sp-3); font-size: .78125rem; line-height: 1.5; color: var(--night-ink); }
+.sos summary { list-style: none; cursor: pointer; padding: .35em .8em; font-weight: 600; min-height: 2.6rem; display: flex; align-items: center; gap: .5em; flex-wrap: wrap; touch-action: manipulation;
+  border: 1px solid rgba(234,242,250,.32); border-left: 4px solid var(--accent); border-radius: var(--radius-chip); background: rgba(255,255,255,.06); }
+.sos summary::-webkit-details-marker { display: none; }
+.sos summary .sum-times { font-weight: 500; opacity: .85; font-variant-numeric: tabular-nums; }
+.sos[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.sos .sos-body { padding: var(--sp-2) .8em var(--sp-3); border: 1px solid rgba(234,242,250,.32); border-top: 0; border-radius: 0 0 var(--radius-chip) var(--radius-chip); background: rgba(255,255,255,.06); }
+.sos .sos-body a { color: var(--night-ink); }
+.sos .sos-body p { margin: 0 0 .4em; }
+.sos .sos-body p:last-child { margin: 0; }
+/* ===== banner（下一個要守住的時間） ===== */
+#banner { position: fixed; left: 0; right: 0; bottom: calc(3.4rem + env(safe-area-inset-bottom)); z-index: 29; padding: 0 var(--sp-3) var(--sp-2); pointer-events: none; }
+#banner[hidden] { display: none; }
+#banner .bn { display: block; max-width: calc(var(--wrap) - 2 * var(--sp-4)); margin-inline: auto; padding: .55em var(--sp-4); pointer-events: auto;
+  background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--indigo); box-shadow: 0 2px 8px rgba(0,0,0,.14);
+  border-radius: var(--radius-card); text-decoration: none; color: var(--ink); font-weight: 500; font-size: .8125rem; line-height: 1.45; }
+#banner .bn b { font-variant-numeric: tabular-nums; }
+/* ===== views ===== */
+html.js body:not([data-view="days"])    #view-days,
+html.js body:not([data-view="tickets"]) #tickets,
+html.js body:not([data-view="info"])    #info { display: none; }
+html.js body:not([data-view="days"]) .daystrip,
+html.js body:not([data-view="days"]) #btn-today { display: none; }
+html.js body[data-view="days"] .day .day-sep { display: none; }
+html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
+html.js body[data-view="days"] #view-days > .day:first-of-type { border-top: 0; }
+/* ===== day ===== */
+.day { padding-top: var(--sp-5); }
+.day-sep { display: flex; align-items: center; gap: var(--sp-3); color: var(--ink-2); margin-bottom: var(--sp-4); }
+.day-sep::before, .day-sep::after { content: ""; flex: 1; border-top: 1px solid var(--line-strong); }
+.day-head .d-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 9px; }
+.day-head h2 { font-size: 1.4375rem; font-weight: 600; letter-spacing: .02em; }
+.day-head .day-meta { font-size: .8125rem; color: var(--ink-2); }
+.day-head .theme { color: var(--ink-2); font-size: .875rem; margin: .1em 0 0; }
+.day.past .day-head h2, .day.past .day-head .theme { color: var(--ink-2); }
+.day.past .day-head .day-meta::after { content: "・已過"; }
+.day.today .day-head .day-meta::after { content: "・今天"; color: var(--accent); font-weight: 600; }
+.keep { margin: var(--sp-3) 0 var(--sp-4); padding: 9px 13px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); font-size: .8125rem; }
+.keep b { font-variant-numeric: tabular-nums; }
+.tz-note { margin: 0 0 var(--sp-3); color: var(--ink-2); font-size: .78125rem; }
+/* ===== timeline ===== */
+.tl { margin: 0; container-type: inline-size; }
+.tl-row { display: grid; grid-template-columns: 3.6em 1fr; column-gap: var(--sp-3); }
+.tl-row > * { min-width: 0; }
+.tl-time { text-align: right; padding-top: .1rem; }
+.tl-time time { font-size: .9375rem; font-weight: 700; white-space: nowrap; }
+.tl-time .t { font-size: .8125rem; font-weight: 600; white-space: nowrap; color: var(--ink-2); }
+.tl-time .t-sub { display: block; font-size: .71875rem; color: var(--ink-2); line-height: 1.4; }
+.tl-body { position: relative; border-left: 2px solid var(--line); padding: 0 0 1.125rem var(--sp-4); min-height: 2rem; }
+.tl-body::before { content: ""; position: absolute; left: -6px; top: .4em; width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); border: 2px solid var(--surface); }
+.tl-row.fixed .tl-body { border-left-color: var(--indigo); }
+.tl-row.fixed .tl-body::before { width: 11px; height: 11px; left: -6.5px; top: .35em; background: var(--indigo); }
+.tl-row.goal .tl-body::before { background: var(--green); }
+.tl-row.done .tl-body { opacity: .7; }
+.tl > .tl-row:last-child .tl-body { padding-bottom: 6px; }
+.tl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35em .6em; }
+.tl-head h3 { font-size: 1rem; font-weight: 700; }
+.tl-note { margin: .15em 0 0; color: var(--ink-2); font-size: .8125rem; line-height: 1.55; }
+.tl-note.warn { color: #6b5a2a; background: color-mix(in srgb, var(--amber) 9%, transparent); border-left: 3px solid var(--amber); padding: 6px 10px; border-radius: 6px; }
+@media (prefers-color-scheme: dark) { .tl-note.warn { color: var(--ink); background: color-mix(in srgb, var(--amber) 16%, transparent); } }
+@container (max-width: 12em) {
+  .tl-row { grid-template-columns: 1fr; }
+  .tl-time { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .5em; text-align: left; padding: 0 0 0 var(--sp-4); }
+  .tl-time .t-sub { display: inline; }
+}
+.now-line { display: flex; align-items: center; gap: .6em; color: var(--accent); font-weight: 600; font-size: .78125rem; margin: 0 0 var(--sp-3); }
+.now-line::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent); }
+.now-line::after { content: ""; flex: 1; border-top: 2px solid var(--accent); opacity: .45; }
+/* ===== badges ===== */
+.badge { display: inline-flex; align-items: center; gap: .3em; font-size: .71875rem; font-weight: 700; line-height: 1.3; padding: 3px 9px; border-radius: var(--radius-pill); white-space: nowrap; }
+.badge-fixed { background: var(--indigo); color: #fff; }
+.badge-goal  { background: var(--green);  color: #fff; }
+.badge-alt   { background: transparent; color: var(--ink-2); border: 1.5px solid var(--line-strong); }
+.badge-flex  { background: transparent; color: var(--amber); border: 1.5px dashed currentColor; }
+.badge-warn  { background: var(--accent); color: #fff; }
+@media (prefers-color-scheme: dark) { .badge-fixed, .badge-goal, .badge-warn { color: #12100D; } }
+/* ===== tables ===== */
+.tbl-wrap { overflow-x: auto; margin: var(--sp-2) 0 var(--sp-3); }
+table.tbl { border-collapse: collapse; width: 100%; font-size: .8125rem; line-height: 1.45; }
+.tbl th, .tbl td { padding: .45em .6em; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tbl th { color: var(--ink-2); font-weight: 600; white-space: nowrap; }
+.tbl td.t, .tbl th.t { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tbl td:first-child, .tbl th:first-child { white-space: nowrap; }
+.tbl tr.hi td { font-weight: 700; }
+/* ===== cards / pages ===== */
+.page { padding-top: var(--sp-5); }
+.page > h2 { font-size: 1.375rem; margin-bottom: var(--sp-2); }
+.page .page-desc { color: var(--ink-2); font-size: .9375rem; margin: 0 0 var(--sp-4); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); padding: var(--sp-4); margin-bottom: var(--sp-4); container-type: inline-size; }
+.card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: var(--sp-2); }
+.card h4 { font-size: .9375rem; font-weight: 600; margin: var(--sp-3) 0 var(--sp-1); }
+.card p, .card ul, .card ol { margin: 0 0 .5em; font-size: .9375rem; }
+.card ul, .card ol { padding-left: 1.2em; }
+.card li { margin-bottom: .2em; }
+.card .kv { display: grid; grid-template-columns: minmax(5.5em, max-content) 1fr; gap: .2em .8em; font-size: .9375rem; margin: 0 0 .5em; }
+.card .kv dt { color: var(--ink-2); }
+.card .kv dd { margin: 0; overflow-wrap: anywhere; }
+.card .kv dd.num { font-weight: 700; letter-spacing: .03em; }
+@container (max-width: 18em) { .card .kv { grid-template-columns: 1fr; } .card .kv dt { margin-top: .3em; } }
+.tips { color: var(--ink-2); font-size: .8125rem; }
+.btn { display: flex; align-items: center; justify-content: center; gap: .5em; min-height: var(--tap); width: 100%; margin-top: var(--sp-2); padding: .5em 1em;
+  font: inherit; font-size: 1.0625rem; font-weight: 600; text-decoration: none; text-align: center; border: 1px solid var(--btn-edge); border-radius: var(--radius); color: var(--indigo); background: var(--surface); touch-action: manipulation; cursor: pointer; }
+.btn-tel { color: var(--green); }
+.btns-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+@media (max-width: 22rem) { .btns-2 { grid-template-columns: 1fr; } }
+.btn-map { display: inline-flex; align-items: center; gap: .4em; min-height: var(--tap); margin-top: var(--sp-1); padding: 0 .8em; font: inherit; font-size: .8125rem; font-weight: 600; text-decoration: none;
+  color: var(--indigo); background: var(--surface); border: 1px solid var(--btn-edge); border-radius: var(--radius-pill); touch-action: manipulation; }
+.chips { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
+.links { padding-left: 1.2em; font-size: .9375rem; }
+.links li { margin-bottom: .35em; }
+/* ===== lock / vault ===== */
+.lock { border-left: 4px solid var(--indigo); }
+.lock form { display: grid; gap: var(--sp-3); }
+.lock input[type="password"] { font: inherit; font-size: 1.0625rem; min-height: var(--tap); padding: .4em .8em; border: 1px solid var(--btn-edge); border-radius: var(--radius); background: var(--bg); color: var(--ink); width: 100%; }
+.lock label.chk { display: flex; align-items: center; gap: .6em; font-size: .9375rem; min-height: var(--tap); }
+.lock input[type="checkbox"] { width: 1.3em; height: 1.3em; }
+.lock .msg { margin: 0; font-size: .875rem; color: var(--ink-2); }
+.lock .msg.err { color: var(--accent); font-weight: 600; }
+.lock .btn-primary { background: var(--night); color: var(--night-ink); border-color: var(--night); }
+#vault[hidden] { display: none; }
+.vault-head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: 0 0 var(--sp-3); font-size: .8125rem; color: var(--ink-2); }
+.vault-head button { margin-left: auto; min-height: 2.6rem; padding: .3em .9em; font: inherit; font-size: .8125rem; font-weight: 600; color: var(--indigo); background: var(--surface); border: 1px solid var(--btn-edge); border-radius: var(--radius-pill); cursor: pointer; touch-action: manipulation; }
+.qr-box { text-align: center; margin: var(--sp-3) 0; }
+.qr-box img { width: min(300px, 100%); height: auto; image-rendering: pixelated; background: #fff; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); cursor: zoom-in; }
+.qr-box .cap { font-size: .8125rem; color: var(--ink-2); margin: .3em 0 0; }
+.shot { display: block; width: 100%; max-width: 20rem; height: auto; margin: var(--sp-2) auto; border: 1px solid var(--line); border-radius: var(--radius); cursor: zoom-in; }
+.overlay { position: fixed; inset: 0; z-index: 50; background: #fff; display: flex; align-items: center; justify-content: center; padding: 4vmin; }
+.overlay[hidden] { display: none; }
+.overlay img { max-width: 100%; max-height: 100%; image-rendering: pixelated; }
+.overlay button { position: absolute; top: max(8px, env(safe-area-inset-top)); right: 12px; min-width: var(--tap); min-height: var(--tap); font: inherit; font-size: 1.1rem; background: #fff; color: #222; border: 1px solid #999; border-radius: var(--radius-pill); }
+.overlay .hint { position: absolute; bottom: max(12px, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; color: #333; font-size: .8125rem; }
+/* ===== tabbar ===== */
+.tabbar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr 1fr; background: var(--surface); border-top: 1px solid var(--line-strong); padding-bottom: env(safe-area-inset-bottom); }
+.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 3.4rem; padding: .35em 0; gap: .1em; text-decoration: none; color: var(--ink-2); font-size: .75rem; line-height: 1.2; touch-action: manipulation; }
+.tabbar a .em { font-size: 1.1875rem; line-height: 1; }
+.tabbar a[aria-current="true"] { color: var(--indigo); font-weight: 600; box-shadow: inset 0 2px 0 var(--indigo); }
+/* ===== footer ===== */
+footer { max-width: var(--wrap); margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) 10.5rem; color: var(--ink-2); font-size: .71875rem; line-height: 1.7; }
+footer .build { margin-top: var(--sp-2); font-variant-numeric: tabular-nums; }
+footer .build:empty { display: none; }
+</style>
+</head>
+<body data-view="days">
+
+<header class="top" id="top">
+  <div class="brand">
+    <h1>東京<span class="yr">9/14–9/17（一–四）</span></h1>
+    <button id="btn-today" type="button" hidden>今天</button>
+  </div>
+  <nav class="daystrip" aria-label="選擇日期">
+    <a class="chip" href="#d1" data-day="d1"><span class="d">9/14</span><span class="w">一・出發</span></a>
+    <a class="chip" href="#d2" data-day="d2"><span class="d">9/15</span><span class="w">二・川越</span></a>
+    <a class="chip" href="#d3" data-day="d3"><span class="d">9/16</span><span class="w">三・市區</span></a>
+    <a class="chip" href="#d4" data-day="d4"><span class="d">9/17</span><span class="w">四・回程</span></a>
+  </nav>
+
+  <details class="sos">
+    <summary>🆘 緊急・9/17 <span class="sum-times">04:20 離店｜04:53 JR｜05:45 日暮里 Skyliner｜08:55 起飛</span></summary>
+    <div class="sos-body">
+      <p><b>飯店</b> 東京池袋多美迎天然溫泉飯店（Dormy Inn Ikebukuro）・3-11-11 Higashiikebukuro, Toshima・<a href="tel:+81359565489">📞 +81 3-5956-5489</a></p>
+      <p><b>9/17 回程</b> 04:10 起床 → 04:20 離店 → 04:53 池袋 JR 山手線外回り（上野・東京方面）→ 05:05 日暮里 → 05:45 Skyliner 1 號 → 06:21 空港第2ビル → 08:55 JL8663</p>
+      <p><b>備援</b> 05:31 JR → 05:43 日暮里 → 06:05 Skyliner 3 號 → 06:41。錯過 04:53 還有 05:11 可先到日暮里再問。</p>
+      <p><b>日本</b> 警察 <a href="tel:110">110</a>・救護／火警 <a href="tel:119">119</a>　<b>旅平險 24h</b> 新安東京海上 0800-050-119（台灣號碼；海外撥打方式以保單為準）</p>
+    </div>
+  </details>
+</header>
+
+<main>
+
+
+  <!-- ================= 行程 ================= -->
+  <div id="view-days">
+
+  <!-- D1 9/14 -->
+  <section class="day" id="d1" data-date="2026-09-14">
+    <div class="day-sep" aria-hidden="true"><span class="lbl">—— 9/14 一 ——</span></div>
+    <header class="day-head">
+      <div class="d-row"><h2>9/14</h2><span class="day-meta">週一・第 1 天</span></div>
+      <p class="theme">出發日：北門開戶 → 桃園 → 成田 → 池袋</p>
+    </header>
+    <p class="keep">要守住：<b>09:30 離開銀行／10:00 機捷直達車／12:45 起飛</b></p>
+    <p class="tz-note">起飛前用台灣時間，抵日後用日本時間（日本快 1 小時）。</p>
+    <div class="tl">
+      <article class="tl-row goal" data-at="2026-09-14T09:30:00+08:00"><div class="tl-time"><time>09:30</time><span class="t-sub">台灣</span></div><div class="tl-body"><div class="tl-head"><h3>離開銀行</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">機捷 A1 台北車站 6 號入口進站；09:50 前到月台。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-14T10:00:00+08:00"><div class="tl-time"><time>10:00</time><span class="t-sub">→10:39</span></div><div class="tl-body"><div class="tl-head"><h3>機捷直達車 → A13 第二航廈</h3><span class="badge badge-fixed">固定</span></div><p class="tl-note">下車直接去出境櫃檯；提早到月台可搭 09:45。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-14T12:45:00+08:00"><div class="tl-time"><time>12:45</time><span class="t-sub">台灣</span></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">✈️</span>JL8664 起飛</h3><span class="badge badge-fixed">固定</span></div><p class="tl-note">桃園第二航廈。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-14T17:15:00+09:00"><div class="tl-time"><time>17:15</time><span class="t-sub">日本</span></div><div class="tl-body"><div class="tl-head"><h3>抵達成田第二航廈</h3></div><p class="tl-note">入境、領行李，估 60–90 分鐘。</p></div></article>
+      <article class="tl-row" data-at="2026-09-14T18:43:00+09:00"><div class="tl-time"><time>18:43</time><span class="t-sub">→19:27</span></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">🚄</span>Skyliner → 京成上野</h3><span class="badge badge-flex">候選</span></div><p class="tl-note">62 號候選；錯過可搭 19:03 → 19:49 或後續班次。京成上野換 JR 到池袋再步行，估 45–60 分。</p></div></article>
+      <article class="tl-row"><div class="tl-time"><span class="t">20:00–</span><span class="t-sub">21:30</span></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">🏨</span>池袋飯店入住、晚餐</h3></div><p class="tl-note">入住期限 24:00，可能超過時要先聯絡飯店。</p></div></article>
+    </div>
+  </section>
+
+  <!-- D2 9/15 -->
+  <section class="day" id="d2" data-date="2026-09-15">
+    <div class="day-sep" aria-hidden="true"><span class="lbl">—— 9/15 二 ——</span></div>
+    <header class="day-head">
+      <div class="d-row"><h2>9/15</h2><span class="day-meta">週二・第 2 天</span></div>
+      <p class="theme">川越散步，依當天興致走；晚上回東京</p>
+    </header>
+    <p class="keep">要守住：<b>無必搭班次</b>；巴士依抵達時間選，周遊券當天才啟用。</p>
+    <div class="tl">
+      <article class="tl-row"><div class="tl-time"><span class="t">上午</span><span class="t-sub">08:00–11:00</span></div><div class="tl-body"><div class="tl-head"><h3>從池袋出發</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">池袋站找 <b>東武東上線</b>，有站務人員的閘口出示 Klook 動態票（當天才按「立即兌換」）。急行約 30 分到<b>川越站</b>；想接巴士走<b>東口</b>。</p></div></article>
+      <article class="tl-row"><div class="tl-time"><span class="t">白天</span><span class="t-sub">11:00–16:00</span></div><div class="tl-body"><div class="tl-head"><h3>川越老街、午餐、神社、咖啡</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">地點與順序不卡，累了就坐下。</p><p class="tl-note">巴士參考（東武小江戶名所巡遊，川越站東口 3 號站牌，平日）：<span class="num">10:00・10:50・11:45・12:45（只到札の辻）・13:20・14:00・14:50・15:40</span>。上車取整理券，下車出示動態票。</p></div></article>
+      <article class="tl-row"><div class="tl-time"><span class="t">傍晚</span><span class="t-sub">16:00–18:00</span></div><div class="tl-body"><div class="tl-head"><h3>回東京</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">川越或川越市搭東武東上線<b>「池袋行」</b>；避開往新木場、元町・中華街等直通班次。</p></div></article>
+      <article class="tl-row"><div class="tl-time"><span class="t">晚上</span><span class="t-sub">18:00–</span></div><div class="tl-body"><div class="tl-head"><h3>晚餐、逛街或回飯店</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">看體力：直接逛（原宿／表參道候選見「資訊」分頁）或先回 Dormy Inn。東京鐵塔為可選。</p></div></article>
+    </div>
+    <p class="tips">券的範圍：池袋 ↔ 川越地區一次來回（沿途不可中途出站）＋川越 ↔ 川越市不限次＋指定區域東武巴士不限次。<b>JR、東京 Metro、西武線不適用</b>；本川越是西武站。詳見「票券」分頁。</p>
+  </section>
+
+  <!-- D3 9/16 -->
+  <section class="day" id="d3" data-date="2026-09-16">
+    <div class="day-sep" aria-hidden="true"><span class="lbl">—— 9/16 三 ——</span></div>
+    <header class="day-head">
+      <div class="d-row"><h2>9/16</h2><span class="day-meta">週三・第 3 天</span></div>
+      <p class="theme">上午筆電，中午到傍晚購物與休息；早點回飯店</p>
+    </header>
+    <p class="keep">要守住：<b>19:00–20:00 回飯店，21:00 左右就寢</b>（隔天 04:10 起床）</p>
+    <div class="tl">
+      <article class="tl-row"><div class="tl-time"><span class="t">上午</span><span class="t-sub">08:00–12:00</span></div><div class="tl-body"><div class="tl-head"><h3>早餐＋筆電約 150 分鐘</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">參考 08:30–11:00；咖啡廳不合適就回飯店做。先選一件今天要完成的事。</p></div></article>
+      <article class="tl-row"><div class="tl-time"><span class="t">中午</span><span class="t-sub">12:00–18:00</span></div><div class="tl-body"><div class="tl-head"><h3>午餐、購物、咖啡</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">銀座（＋有樂町）暫列主要候選。想買：CELINE 包、男裝、高湯包伴手禮、補藥妝／UNIQLO／無印。店家見「資訊」分頁。</p></div></article>
+      <article class="tl-row goal" data-at="2026-09-16T19:00:00+09:00"><div class="tl-time"><time>19:00</time><span class="t-sub">–20:00</span></div><div class="tl-body"><div class="tl-head"><h3>晚餐後回飯店</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">泡澡（大浴場時間問櫃台）。</p></div></article>
+      <article class="tl-row goal" data-at="2026-09-16T20:00:00+09:00"><div class="tl-time"><time>20:00</time><span class="t-sub">–21:00</span></div><div class="tl-body"><div class="tl-head"><h3>整理行李、確認明早</h3><span class="badge badge-goal">目標</span></div><p class="tl-note warn">睡前做完：Skyliner 回程 QR 在相簿與本頁都看得到；護照、票券、明早衣物放外面；行動電源與手機充飽；<b>向櫃台確認清晨 04:20 的退房方式與出口</b>；鬧鐘 <b>04:10</b>。</p></div></article>
+      <article class="tl-row goal" data-at="2026-09-16T21:00:00+09:00"><div class="tl-time"><time>21:00</time></div><div class="tl-body"><div class="tl-head"><h3>就寢</h3><span class="badge badge-goal">目標</span></div></div></article>
+    </div>
+  </section>
+
+  <!-- D4 9/17 -->
+  <section class="day" id="d4" data-date="2026-09-17">
+    <div class="day-sep" aria-hidden="true"><span class="lbl">—— 9/17 四 ——</span></div>
+    <header class="day-head">
+      <div class="d-row"><h2>9/17</h2><span class="day-meta">週四・第 4 天</span></div>
+      <p class="theme">清晨退房 → 日暮里轉 Skyliner → 成田 → 桃園</p>
+    </header>
+    <p class="keep">要守住：<b>04:20 離店／04:53 JR／05:45 日暮里 Skyliner／08:55 起飛</b>。已選 A（日暮里）主方案、D 備援。</p>
+    <div class="tl">
+      <article class="tl-row goal" data-at="2026-09-17T04:10:00+09:00"><div class="tl-time"><time>04:10</time></div><div class="tl-body"><div class="tl-head"><h3>起床</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">只留 10 分鐘盥洗與退房；行李、票券前晚備妥。</p></div></article>
+      <article class="tl-row goal" data-at="2026-09-17T04:20:00+09:00"><div class="tl-time"><time>04:20</time></div><div class="tl-body"><div class="tl-head"><h3>離開飯店</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">步行約 15 分 → <b>04:35 到池袋 JR</b>，留約 18 分進站找月台。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-17T04:53:00+09:00"><div class="tl-time"><time>04:53</time></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">🚃</span>池袋 JR 山手線外回り</h3><span class="badge badge-fixed">固定</span></div><p class="tl-note">往<b>上野・東京方面</b>，表定 7 號月台；約 <b>05:05 日暮里</b>下車。JR 另付費（Suica）。</p><p class="tl-note">錯過 04:53：<span class="num">05:11</span> 也能到日暮里，再問 05:45 或 06:05 有沒有位。首班 04:25；之後 04:53・05:11・05:31・05:43・05:51・05:58。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-17T05:45:00+09:00"><div class="tl-time"><time>05:45</time></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">🚄</span>日暮里搭 Skyliner 1 號</h3><span class="badge badge-fixed">固定</span><span class="badge badge-warn">尚未劃位</span></div><p class="tl-note">下 JR 後約 40 分鐘：跟京成線／Skyliner 指標走，連絡櫃檯 <b>05:00 開門</b>，出示回程 QR，指定「日暮里上車」與班次。排隊與空位未保證。</p><p class="tl-note">若已坐過日暮里：續坐到上野，步行到京成上野（窗口 05:10 開）搭同一班 05:40 發車。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-17T06:21:00+09:00"><div class="tl-time"><time>06:21</time></div><div class="tl-body"><div class="tl-head"><h3>空港第2ビル站下車</h3></div><p class="tl-note">前往第二航廈 3F 出境大廳。JAL 櫃檯一般 07:00 開。</p></div></article>
+      <article class="tl-row goal" data-at="2026-09-17T07:55:00+09:00"><div class="tl-time"><time>07:55</time></div><div class="tl-body"><div class="tl-head"><h3>報到完成</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">依 JAL 一般規定換算：07:55 前完成報到、08:25 左右到登機門；實際以登機證／航空公司通知為準。行動電源隨身不託運。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-17T08:55:00+09:00"><div class="tl-time"><time>08:55</time></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">✈️</span>JL8663 起飛</h3><span class="badge badge-fixed">固定</span></div><p class="tl-note">表定 11:35 抵桃園第二航廈（台灣時間）。</p></div></article>
+    </div>
+
+    <div class="card">
+      <h3>D 備援與其他走法</h3>
+      <p><b>D｜備援：</b>05:31 池袋 JR → 約 05:43 日暮里 → <b>06:05 Skyliner 3 號</b> → 06:41 第二航廈站（距起飛 2 小時 14 分）。</p>
+      <p class="tips"><b>05:31 JR 接不上 05:45 Skyliner</b>（只差約 2 分）。06:05 也趕不上或停駛：立刻找站務／航空公司協助。山手線停駛或搭錯方向時，改去上野不會自動解決，看當下位置請站務協助或另查計程車。</p>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>Skyliner（平日）</th><th class="t">京成上野發</th><th class="t">日暮里發</th><th class="t">第二航廈站到</th></tr></thead>
+        <tbody>
+          <tr class="hi"><td>1 號／主方案</td><td class="t">05:40</td><td class="t">05:45</td><td class="t">06:21</td></tr>
+          <tr class="hi"><td>3 號／備援</td><td class="t">06:00</td><td class="t">06:05</td><td class="t">06:41</td></tr>
+          <tr><td>5 號／僅供查閱（不足 2 小時）</td><td class="t">06:20</td><td class="t">06:25</td><td class="t">07:05</td></tr>
+        </tbody></table></div>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>方案</th><th class="t">池袋 JR 發</th><th>轉乘站・約下車</th><th class="t">Skyliner</th><th class="t">到機場站</th><th>餘裕</th></tr></thead>
+        <tbody>
+          <tr class="hi"><td>A 主方案</td><td class="t">04:53</td><td>日暮里 約 05:05</td><td class="t">05:45</td><td class="t">06:21</td><td>約 40 分</td></tr>
+          <tr><td>B</td><td class="t">05:11</td><td>日暮里 約 05:24</td><td class="t">05:45</td><td class="t">06:21</td><td>約 21 分，看排隊與空位</td></tr>
+          <tr><td>C 上野替代</td><td class="t">04:53</td><td>JR 上野 約 05:10 → 步行換站</td><td class="t">05:40</td><td class="t">06:21</td><td>約 30 分（含步行 10–15）</td></tr>
+          <tr class="hi"><td>D 備援</td><td class="t">05:31</td><td>日暮里 約 05:43</td><td class="t">06:05</td><td class="t">06:41</td><td>約 22 分，須換到票且有位</td></tr>
+          <tr><td>E 上野替代</td><td class="t">05:11</td><td>JR 上野 約 05:28 → 步行換站</td><td class="t">06:00</td><td class="t">06:41</td><td>約 32 分（含步行 10–15）</td></tr>
+        </tbody></table></div>
+      <p class="tips">JR 中途站官方列的是發車時間，上表當約略下車時間用。班表 9/13 查核；JR 上野與京成上野是不同車站。</p>
+      <ul class="links">
+        <li><a href="https://timetables.jreast.co.jp/2609/timetable/tt0108/0108050.html">JR 池袋平日班表</a>・<a href="https://new-www.keisei.co.jp/keisei/tetudou/skyliner/jp/traffic/skyliner_timetable.php">京成 Skyliner 班表</a>・<a href="https://www.keisei.co.jp/keisei/tetudou/skyliner/jp/traffic/nippori.php">日暮里站內圖</a></li>
+        <li><a href="https://www.keisei.co.jp/keisei/tetudou/skyliner/tc/findus/skyliner.php">京成兌換櫃檯時間</a>・<a href="https://www.jal.co.jp/jp/en/inter/airport/nrt/checkin/">JAL 成田櫃檯</a>・<a href="https://www.narita-airport.jp/en/airportguide/inter-dep/">成田出境流程</a></li>
+      </ul>
+    </div>
+  </section>
+  </div><!-- /view-days -->
+
+  <!-- ================= 票券 ================= -->
+  <section class="page" id="tickets">
+    <h2>🎫 票券與訂單</h2>
+    <p class="page-desc">上半部不用解鎖：怎麼用。下半部輸入口令後顯示訂單號、兌換號與 QR。</p>
+
+    <div class="card lock" id="lock">
+      <h3>🔐 我的票券資料</h3>
+      <form id="lock-form" autocomplete="off">
+        <input type="password" id="pass" name="pass" placeholder="口令" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="口令">
+        <label class="chk"><input type="checkbox" id="remember" checked> 記住這台手機（主畫面 app 與 Safari 要各記一次）</label>
+        <button type="submit" class="btn btn-primary" id="btn-unlock">解鎖</button>
+        <p class="msg" id="lock-msg">載入中…</p>
+      </form>
+    </div>
+
+    <div id="vault" hidden></div>
+
+    <div class="card">
+      <h3>🚄 Skyliner 回程（9/17）怎麼兌換</h3>
+      <ul>
+        <li>買的是<b>兩張單程票</b>（成人 1 人），回程 京成上野 → 成田機場第 2・3 航廈站。<b>尚未劃位</b>：QR 是兌換憑證，要在兌換處換成指定班次的票。</li>
+        <li>兌換處：<b>日暮里</b> JR／京成連絡櫃檯（<b>05:00 開</b>）、京成上野（05:10 開）、成田機場櫃台。出示 QR 或購買詳情畫面；指定「日暮里上車、1 號 05:45」。</li>
+        <li>票券服務有效期限 2026/10/13。去程票（9/14 成田 → 京成上野）為另一張獨立單程票。</li>
+        <li>QR 在相簿也存了一份；掃描前把螢幕調亮。</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🎫 川越 Premium 周遊券（火車＋巴士）怎麼用</h3>
+      <ol>
+        <li>手機要有網路、有電；打開 Klook App 或網頁登入。</li>
+        <li>「所有訂單」→ 川越 Premium →「查看憑證」。</li>
+        <li><b>確定要搭車那天才按「立即兌換／Redeem now」</b>；按下去那天就是使用日，有效到當日末班車（不是 24 小時）。</li>
+        <li>池袋站<b>東武東上線</b>有站務人員的閘口出示動態票；到川越／川越市與回程同樣出示。巴士下車時交整理券並出示。</li>
+        <li>回程認終點<b>「池袋」</b>的班次。</li>
+      </ol>
+      <p class="tips">本頁<b>不持有可用票</b>；截圖與 PDF 都不能搭車，只有 Klook 動態憑證算數。範圍：池袋 ↔ 川越地區一次來回＋川越 ↔ 川越市不限次＋指定區域東武巴士（含小江戶巡遊巴士）。JR／Metro／西武不適用；本川越是西武站。東武百貨池袋店 <b>7% OFF（93 折）</b>於 2F 免稅櫃檯兌換，UNIQLO 不適用。</p>
+      <ul class="links">
+        <li><a href="https://www.tobu-bus.com/pc/area/koedo_routetour.php">東武小江戶巡遊巴士時刻表</a>・<a href="https://www.tobu.co.jp/en/ticket/kawagoe/premium.html">東武 Premium 適用範圍</a>・<a href="https://res.klook.com/image/upload/Bus_area_map_3_h1a9i5.pdf">巴士適用區域圖</a></li>
+        <li><a href="https://www.klook.com/activity/100464-kawagoe-pass-digital-ticket/">Klook 商品頁與啟用步驟</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>✈️ 機票 JL8664 / JL8663</h3>
+      <dl class="kv">
+        <dt>去程</dt><dd>9/14 桃園 12:45 → 成田 17:15（兩端第二航廈）</dd>
+        <dt>回程</dt><dd>9/17 成田 08:55 → 桃園 11:35（台灣時間）</dd>
+        <dt>行李</dt><dd>託運來回各 2 件、每件 23 kg；行動電源隨身、機上不可用它充電；液體每件 ≤100 mL 裝 1 L 透明袋</dd>
+        <dt>報到</dt><dd>JAL 成田櫃檯一般 07:00 開；依一般規定 07:55 前完成、08:25 到登機門，實際以航空公司通知為準。行程單不是登機證。</dd>
+      </dl>
+      <ul class="links"><li><a href="https://www.jal.co.jp/jp/en/inter/boarding_attention/">JAL 報到提醒</a>・<a href="https://www.jal.co.jp/jp/en/inter/baggage/limit/">JAL 行李規則</a></li></ul>
+    </div>
+
+    <div class="card">
+      <h3>📶 eSIM</h3>
+      <ul>
+        <li>主方案：<b>日本 5 天總量 3GB</b>，Docomo 4G LTE，僅流量，可分享熱點；APN <code>vmobile.jp</code>。</li>
+        <li>贈送：日本 7 天總量 1GB（獨立方案，不是加總）。</li>
+        <li>在 Klook App 訂單內安裝；抵日後把該 eSIM 設為行動數據並開啟該 eSIM 的數據漫遊，避免用到台灣門號漫遊。</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🛡️ 旅平險</h3>
+      <ul>
+        <li>新安東京海上「平安福個人旅行綜合保險」，保期 2026/09/14–09/18。</li>
+        <li>24 小時客服 <a href="tel:0800050119">0800-050-119</a>・網路投保 0800-366-168（平日 08:30–17:30）・信箱 <code>ezgo@tmnewa.com.tw</code>。海外撥打方式與海外協助專線以保單為準（PDF 加密，尚未核對）。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= 資訊 ================= -->
+  <section class="page" id="info">
+    <h2>🏨 住宿・資訊</h2>
+    <div class="card">
+      <h3>東京池袋多美迎天然溫泉飯店</h3>
+      <p class="kv-line">Dormy Inn Ikebukuro／ドーミーイン池袋</p>
+      <dl class="kv">
+        <dt>地址</dt><dd>3 Chome-11-11 Higashiikebukuro, Toshima City, Tokyo</dd>
+        <dt>入住</dt><dd>9/14 15:00 後至 24:00 前</dd>
+        <dt>退房</dt><dd>9/17 11:00 前；清晨 04:20 離店，先問櫃台流程</dd>
+        <dt>備註</dt><dd>3 晚、無早餐；大浴場時間問櫃台</dd>
+      </dl>
+      <div class="btns-2">
+        <a class="btn btn-tel" href="tel:+81359565489">📞 +81 3-5956-5489</a>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Dormy+Inn+Ikebukuro">🗺️ 地圖</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>✈️ 航班</h3>
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th>航段</th><th>航班</th><th class="t">起飛</th><th class="t">抵達</th></tr></thead>
+        <tbody>
+          <tr><td>桃園 → 成田</td><td>JL8664</td><td class="t">9/14 12:45（台）</td><td class="t">9/14 17:15（日）</td></tr>
+          <tr><td>成田 → 桃園</td><td>JL8663</td><td class="t">9/17 08:55（日）</td><td class="t">9/17 11:35（台）</td></tr>
+        </tbody></table></div>
+      <p class="tips">兩端皆第二航廈；日本航空承運。</p>
+    </div>
+
+    <div class="card">
+      <h3>🆘 緊急電話</h3>
+      <div class="btns-2">
+        <a class="btn btn-tel" href="tel:110">📞 警察 110</a>
+        <a class="btn btn-tel" href="tel:119">📞 救護・火警 119</a>
+      </div>
+      <ul>
+        <li>飯店櫃台：<a href="tel:+81359565489">+81 3-5956-5489</a></li>
+        <li>旅平險 24h：0800-050-119（台灣號碼）</li>
+        <li>外交部旅外急難救助全球免付費 800-0885-0885（自日本撥 001-010-800-0885-0885；以<a href="https://www.boca.gov.tw/">外交部領事事務局</a>公告為準）</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>🛍️ 逛街候選</h3>
+      <p class="tips">想買：後背包、斜背小包、衣服（BEAMS、green label relaxing）、On 跑鞋、CELINE 包、高湯包伴手禮、藥妝／UNIQLO／無印。都是候選，不是必走。</p>
+      <h4>原宿・表參道・澀谷</h4>
+      <div class="chips">
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=BEAMS%20%E5%8E%9F%E5%AE%BF">🗺️ BEAMS 原宿</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=PORTER%20OMOTESANDO%20%E7%A5%9E%E5%AE%AE%E5%89%8D5-6-8">🗺️ PORTER 表參道</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=On%20Store%20Tokyo%20Cat%20Street%20%E7%A5%9E%E5%AE%AE%E5%89%8D5-17-27">🗺️ On Cat Street</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=GREGORY%20%E5%8E%9F%E5%AE%BF%20%E7%A5%9E%E5%AE%AE%E5%89%8D6-17-15">🗺️ GREGORY 原宿（11:00–20:00）</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=BEAMS%20MEN%20SHIBUYA">🗺️ BEAMS MEN 澀谷</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=PORTER%20EXCHANGE%20%E6%B8%8B%E8%B0%B7PARCO">🗺️ PORTER EXCHANGE 澀谷 PARCO</a>
+      </div>
+      <h4>銀座・有樂町</h4>
+      <div class="chips">
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=green%20label%20relaxing%20%E3%83%AB%E3%83%9F%E3%83%8D%E6%9C%89%E6%A5%BD%E7%94%BA">🗺️ green label relaxing LUMINE 有樂町</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=CELINE%20%E9%8A%80%E5%BA%A7">🗺️ CELINE 銀座</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E8%8C%85%E4%B9%83%E8%88%8E%20%E9%8A%80%E5%BA%A7">🗺️ 茅乃舍（待確認品牌）</a>
+      </div>
+      <h4>池袋</h4>
+      <div class="chips">
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=green%20label%20relaxing%20%E3%83%AB%E3%83%9F%E3%83%8D%E6%B1%A0%E8%A2%8B">🗺️ green label relaxing LUMINE 池袋</a>
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E6%AD%A6%E7%99%BE%E8%B2%A8%E5%BA%97%20%E6%B1%A0%E8%A2%8B%E5%BA%97">🗺️ 東武百貨池袋店（券 7% OFF）</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔗 常用連結</h3>
+      <ul class="links">
+        <li><a href="https://new-www.keisei.co.jp/keisei/tetudou/skyliner/jp/traffic/skyliner_timetable.php">京成 Skyliner 時刻表</a>・<a href="https://www.keisei.co.jp/keisei/tetudou/skyliner/tc/findus/skyliner.php">兌換櫃檯</a></li>
+        <li><a href="https://timetables.jreast.co.jp/2609/timetable/tt0108/0108050.html">JR 池袋平日班表</a>・<a href="https://www.tobu.co.jp/en/access/kawagoe/">東武：池袋到川越</a>・<a href="https://transfer-cloud.navitime.biz/tobubus?feature=transfer">東武巴士路線搜尋</a></li>
+        <li><a href="https://www.jal.co.jp/jp/en/inter/boarding_attention/">JAL 報到規定</a>・<a href="https://www.narita-airport.jp/en/airportguide/inter-dep/">成田出境流程</a></li>
+        <li><a href="https://www.klook.com/">Klook（訂單與電子憑證）</a>・<a href="https://weathernews.jp/s/forecast/detail.fcgi?area=Tokyo">東京天氣</a></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>📖 小技巧與更新</h3>
+      <ul>
+        <li>Safari 開這頁 → 分享 →「加入主畫面」。主畫面 app 與 Safari 各自記口令，從圖示開啟後再解鎖一次。</li>
+        <li>地圖按鈕會直接開 Google 地圖 App。</li>
+        <li>畫面怪怪的或看到舊內容：按下面的按鈕。</li>
+      </ul>
+      <div class="btns-2">
+        <button type="button" class="btn" id="btn-reload">🔄 重新載入</button>
+        <button type="button" class="btn" id="btn-nuke">🧹 清快取並重載</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="overlay" id="overlay" hidden><button type="button" id="overlay-close" aria-label="關閉">✕</button><img id="overlay-img" alt=""><p class="hint">點任一處關閉・螢幕調亮</p></div>
+
+<div id="banner" hidden><a class="bn" id="bn-link" href="#d4"></a></div>
+
+<nav class="tabbar" aria-label="主要分頁">
+  <a id="tab-days" href="#d1" aria-current="true"><span class="em">📅</span>行程</a>
+  <a id="tab-tickets" href="#tickets"><span class="em">🎫</span>票券</a>
+  <a id="tab-info" href="#info"><span class="em">🏨</span>資訊</a>
+</nav>
+
+<footer>
+  <p>最後更新 2026-09-15・時刻含「約」者為估值；「固定」＝已訂或選定班次，「目標」＝自訂規劃值，「彈性」＝可伸縮。班表 9/13 查核，搭乘前再看運行資訊。</p>
+  <p class="build"></p>
+</footer>
+
+<script>
+(function () {
+  document.documentElement.classList.add('js');
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function lsGet(k) { try { return localStorage.getItem('tokyo2026:' + k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem('tokyo2026:' + k, v); } catch (e) {} }
+  function lsDel(k) { try { localStorage.removeItem('tokyo2026:' + k); } catch (e) {} }
+  function p2(n) { return (n < 10 ? '0' : '') + n; }
+
+  // ---- 版本戳（沿 kyoto：document.lastModified，永遠等於瀏覽器真正拿到的那份）
+  (function () {
+    var el = document.querySelector('footer .build'); if (!el) return;
+    var d = new Date(document.lastModified); if (isNaN(d.getTime())) return;
+    el.textContent = '程式版本 ' + d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) + ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+  })();
+
+  // ---- header 實高 → --top-h（fixed header 不佔版面）
+  var top = document.getElementById('top');
+  function measureTop() { document.documentElement.style.setProperty('--top-h', top.offsetHeight + 'px'); }
+  measureTop(); window.addEventListener('resize', measureTop);
+  if (window.ResizeObserver) new ResizeObserver(measureTop).observe(top);
+
+  // ---- 「現在」：?now=2026-09-17T03:50:00+09:00 可覆寫（測試用）
+  var NOW_OVERRIDE = null;
+  try { var q = new URLSearchParams(location.search).get('now'); if (q) { var t = new Date(q); if (!isNaN(t.getTime())) NOW_OVERRIDE = t; } } catch (e) {}
+  function now() { return NOW_OVERRIDE ? new Date(NOW_OVERRIDE.getTime() + (Date.now() - NOW_BASE)) : new Date(); }
+  var NOW_BASE = Date.now();
+  var fmtJST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' });
+  var fmtJSTtime = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false });
+  function todayJST() { return fmtJST.format(now()); } // YYYY-MM-DD
+
+  // ---- 日期 section 狀態（已過／今天）＋ 今天是 d 幾
+  var days = qsa('#view-days .day');
+  var todayId = null;
+  (function () {
+    var t = todayJST();
+    days.forEach(function (s) {
+      var d = s.getAttribute('data-date');
+      s.classList.toggle('past', d < t);
+      s.classList.toggle('today', d === t);
+      if (d === t) todayId = s.id;
+    });
+    var btn = document.getElementById('btn-today');
+    if (todayId) btn.hidden = false;
+  })();
+
+  // ---- 分頁路由：hash 決定 view；原生錨點，不攔連結
+  var tabs = { days: document.getElementById('tab-days'), tickets: document.getElementById('tab-tickets'), info: document.getElementById('tab-info') };
+  var lastView = null;
+  function viewFor(hash) { return hash === '#tickets' ? 'tickets' : hash === '#info' ? 'info' : 'days'; }
+  function applyView() {
+    var h = location.hash, v = viewFor(h);
+    document.body.setAttribute('data-view', v);
+    Object.keys(tabs).forEach(function (k) { tabs[k].setAttribute('aria-current', String(k === v)); });
+    qsa('.chip').forEach(function (c) { c.setAttribute('aria-current', String(v === 'days' && c.getAttribute('href') === h)); });
+    measureTop(); // 切換分頁會藏／顯示日期列，header 高度跟著變；同步量一次，不只靠 ResizeObserver
+    if (v !== 'days' && v !== lastView) window.scrollTo({ top: 0, behavior: 'auto' });
+    if (v === 'tickets') ensureBlob();
+    lastView = v;
+  }
+  window.addEventListener('hashchange', applyView);
+  tabs.days.addEventListener('click', function () { if (todayId) this.setAttribute('href', '#' + todayId); });
+  document.getElementById('btn-today').addEventListener('click', function () {
+    if (!todayId) return;
+    if (location.hash === '#' + todayId) document.getElementById(todayId).scrollIntoView({ behavior: 'auto' });
+    else location.hash = '#' + todayId;
+  });
+
+  // ---- 下一個要守住的時間（data-at 的 ISO 時刻）＋ now-line
+  var rows = qsa('.tl-row[data-at]').map(function (r) { return { el: r, at: new Date(r.getAttribute('data-at')), title: r.querySelector('h3').textContent.trim(), day: r.closest('.day') }; })
+    .filter(function (r) { return !isNaN(r.at.getTime()); }).sort(function (a, b) { return a.at - b.at; });
+  var banner = document.getElementById('banner'), bnLink = document.getElementById('bn-link');
+  var nowLine = document.createElement('p'); nowLine.className = 'now-line';
+  function tick() {
+    var n = now();
+    var next = null;
+    rows.forEach(function (r) { r.el.classList.toggle('done', r.at < n); if (!next && r.at > n) next = r; });
+    if (next) {
+      var ms = next.at - n, mins = Math.round(ms / 60000), h = Math.floor(mins / 60), m = mins % 60;
+      var when = (h >= 24) ? (Math.floor(h / 24) + ' 天 ' + (h % 24) + ' 小時') : (h ? h + ' 小時 ' + m + ' 分' : m + ' 分');
+      var tt = next.el.querySelector('time'); var tLabel = tt ? tt.textContent : '';
+      bnLink.innerHTML = '';
+      bnLink.appendChild(document.createTextNode('⏱ 下一個：'));
+      var b = document.createElement('b'); b.textContent = tLabel + ' ' + next.title; bnLink.appendChild(b);
+      bnLink.appendChild(document.createTextNode('・還 ' + when));
+      bnLink.setAttribute('href', '#' + next.day.id);
+      banner.hidden = false;
+      // now-line：插在「今天」section 內第一個未來列之前
+      var todaySec = todayId && document.getElementById(todayId);
+      if (todaySec && next.day === todaySec) { nowLine.textContent = '現在 ' + fmtJSTtime.format(n) + '（日本時間）'; next.el.parentNode.insertBefore(nowLine, next.el); }
+      else if (nowLine.parentNode) nowLine.parentNode.removeChild(nowLine);
+    } else { banner.hidden = true; if (nowLine.parentNode) nowLine.parentNode.removeChild(nowLine); }
+  }
+  tick(); setInterval(tick, 60000);
+
+  // ---- 票券：加密 blob 載入與解鎖
+  var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+  var blob = null, blobState = 'idle';
+  var lockMsg = document.getElementById('lock-msg'), lockForm = document.getElementById('lock-form'), vault = document.getElementById('vault'), lockCard = document.getElementById('lock');
+  function setMsg(t, err) { lockMsg.textContent = t; lockMsg.classList.toggle('err', !!err); }
+  function ensureBlob() {
+    if (blobState !== 'idle') return;
+    blobState = 'loading';
+    if (!window.isSecureContext || !(window.crypto && crypto.subtle)) { blobState = 'nocrypto'; setMsg('這個環境不能解密（需要 https 或 localhost），請用正式網址開。', true); return; }
+    fetch('./private.enc.json', { cache: 'no-cache' }).then(function (r) {
+      if (r.status === 404) { blobState = 'missing'; setMsg('票券資料尚未上線。'); lockForm.querySelector('#btn-unlock').disabled = true; return null; }
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    }).then(function (j) {
+      if (!j) return;
+      blob = j; blobState = 'ready';
+      setMsg('票券資料版本 ' + (blob.generated || '?') + '。輸入口令解鎖。');
+      var saved = lsGet('pass');
+      if (saved) unlock(saved, false);
+    }).catch(function (e) { blobState = 'idle'; setMsg('票券資料載入失敗（' + e.message + '），檢查網路後再切回本頁。', true); });
+  }
+  function decrypt(meta, pass) {
+    return crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(meta.salt), iterations: meta.kdf.iterations, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    }).then(function (key) {
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(meta.iv), tagLength: 128 }, key, b64(meta.ct));
+    }).then(function (pt) { return JSON.parse(new TextDecoder().decode(pt)); });
+  }
+  function unlock(pass, remember) {
+    if (!blob) return;
+    setMsg('解鎖中…');
+    document.getElementById('btn-unlock').disabled = true;
+    decrypt(blob, pass).then(function (data) {
+      if (remember) lsSet('pass', pass);
+      renderVault(data);
+      lockCard.hidden = true; vault.hidden = false;
+    }).catch(function () {
+      lsDel('pass');
+      setMsg('口令不對，或票券資料是舊版（試試「資訊」分頁的重新載入）。', true);
+    }).then(function () { document.getElementById('btn-unlock').disabled = false; });
+  }
+  lockForm.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var pass = document.getElementById('pass').value.trim();
+    if (!pass) { setMsg('請輸入口令。', true); return; }
+    if (blobState !== 'ready') { ensureBlob(); setMsg('資料還沒載入，稍後再按一次。', true); return; }
+    unlock(pass, document.getElementById('remember').checked);
+  });
+
+  // ---- 渲染解鎖後的卡片（全部 textContent，不拼 HTML）
+  function el(tag, attrs, children) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { if (k === 'text') n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); });
+    (children || []).forEach(function (c) { if (c) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function kv(pairs) {
+    var dl = el('dl', { 'class': 'kv' });
+    pairs.forEach(function (p) { if (p[1] == null || p[1] === '') return; dl.appendChild(el('dt', { text: p[0] })); var dd = el('dd', p[2] ? { 'class': 'num' } : null); if (p[1] instanceof Node) dd.appendChild(p[1]); else dd.textContent = p[1]; dl.appendChild(dd); });
+    return dl;
+  }
+  function links(list) {
+    if (!list || !list.length) return null;
+    var ul = el('ul', { 'class': 'links' });
+    list.forEach(function (l) { ul.appendChild(el('li', null, [el('a', { href: l.url, text: l.label })])); });
+    return ul;
+  }
+  function qrBox(img, cap) {
+    if (!img || !img.dataUrl) return null;
+    var im = el('img', { src: img.dataUrl, alt: cap || 'QR', 'class': 'qr' });
+    im.addEventListener('click', function () { showOverlay(img.dataUrl); });
+    return el('div', { 'class': 'qr-box' }, [im, el('p', { 'class': 'cap', text: cap || '' })]);
+  }
+  function renderVault(d) {
+    vault.innerHTML = '';
+    var head = el('div', { 'class': 'vault-head' }, [el('span', { text: '🔓 已解鎖・資料版本 ' + ((d.meta && d.meta.generatedAt) || blob.generated || '?') })]);
+    var lockBtn = el('button', { type: 'button', text: '🔒 鎖上並忘記口令' });
+    lockBtn.addEventListener('click', function () { lsDel('pass'); vault.innerHTML = ''; vault.hidden = true; lockCard.hidden = false; document.getElementById('pass').value = ''; setMsg('已鎖上。'); });
+    head.appendChild(lockBtn); vault.appendChild(head);
+
+    (d.skyliner || []).forEach(function (s) {
+      vault.appendChild(el('div', { 'class': 'card' }, [
+        el('h3', { text: '🚄 Skyliner ' + (s.dir || '') }),
+        kv([['路線', s.route], ['兌換號碼', s.exchangeNo, true], ['有效期限', s.validUntil], ['票種', s.kind]]),
+        qrBox(s.qr, '兌換 QR・' + (s.dir || '')),
+        links(s.links)
+      ]));
+    });
+    if (d.flight) vault.appendChild(el('div', { 'class': 'card' }, [
+      el('h3', { text: '✈️ 機票訂位' }),
+      kv([['訂位代號', d.flight.pnr, true], ['易遊網訂單', d.flight.agencyOrder, true], ['旅客', d.flight.passenger], ['艙等', d.flight.cabin], ['已付', d.flight.paid]]),
+      links(d.flight.links)
+    ]));
+    if (d.hotel) {
+      var h = d.hotel, shot = null;
+      if (h.screenshot && h.screenshot.dataUrl) { shot = el('img', { src: h.screenshot.dataUrl, alt: '飯店訂單截圖', 'class': 'shot' }); shot.addEventListener('click', function () { showOverlay(h.screenshot.dataUrl); }); }
+      vault.appendChild(el('div', { 'class': 'card' }, [
+        el('h3', { text: '🏨 飯店訂單' }),
+        kv([['Klook 訂單', h.klookOrder, true], ['供應商參考', h.supplierRef, true], ['訂房姓名', h.guest], ['房型', h.room]]),
+        h.phrase ? el('p', { 'class': 'tips', text: h.phrase }) : null,
+        shot
+      ]));
+    }
+    if (d.kawagoe) vault.appendChild(el('div', { 'class': 'card' }, [
+      el('h3', { text: '🎫 川越券訂單' }),
+      kv([['Klook 訂單', d.kawagoe.order, true], ['憑證號', d.kawagoe.voucher, true], ['付款訂單', d.kawagoe.paymentOrder, true], ['已付', d.kawagoe.paid]]),
+      el('p', { 'class': 'tips', text: '在 Klook App「所有訂單」找「川越 Premium」；出示動態憑證，不是這裡的號碼。' }),
+      links(d.kawagoe.links)
+    ]));
+    (d.esim || []).forEach(function (e) {
+      vault.appendChild(el('div', { 'class': 'card' }, [el('h3', { text: '📶 eSIM・' + (e.plan || '') }), kv([['訂單', e.order, true], ['備註', e.note]]), links(e.links)]));
+    });
+    if (d.insurance) vault.appendChild(el('div', { 'class': 'card' }, [
+      el('h3', { text: '🛡️ 旅平險' }),
+      kv([['要保序號', d.insurance.policyNo, true], ['保期', d.insurance.period], ['保費', d.insurance.premium], ['備註', d.insurance.note]]),
+      links(d.insurance.links)
+    ]));
+    if (d.address) vault.appendChild(el('div', { 'class': 'card' }, [
+      el('h3', { text: '🏠 台灣住址（填表用）' }),
+      kv([['中文', d.address.zh], ['英文', d.address.en], ['分欄', d.address.lines]]),
+      el('p', { 'class': 'tips', text: 'Home address 填台灣住址；Address in Japan 填飯店。' })
+    ]));
+  }
+
+  // ---- 放大檢視（QR／截圖）
+  var overlay = document.getElementById('overlay'), overlayImg = document.getElementById('overlay-img');
+  function showOverlay(src) { overlayImg.src = src; overlay.hidden = false; }
+  overlay.addEventListener('click', function () { overlay.hidden = true; overlayImg.src = ''; });
+
+  // ---- 更新／清快取（逃生口：standalone 沒網址列）
+  document.getElementById('btn-reload').addEventListener('click', function () { location.reload(); });
+  document.getElementById('btn-nuke').addEventListener('click', function () {
+    var done = function () { location.reload(); };
+    var p = Promise.resolve();
+    if (window.caches) p = caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); });
+    if (navigator.serviceWorker) p = p.then(function () { return navigator.serviceWorker.getRegistrations(); }).then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); });
+    p.then(done, done);
+  });
+
+  // ---- service worker（有 sw.js 才註冊；M3 加入）
+  if ('serviceWorker' in navigator && window.isSecureContext && document.documentElement.hasAttribute('data-sw')) {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  }
+  // ---- 初始化放最後：applyView 會叫 ensureBlob，上面的 var 狀態要先賦值完（var 提升＝undefined 會讓 blobState 檢查失效）
+  // 首次載入沒帶 hash → 跳今天（旅程外則留在 d1）
+  if (!location.hash && todayId) history.replaceState(null, '', '#' + todayId);
+  applyView();
+  if (location.hash && /^#d[1-4]$/.test(location.hash)) {
+    var target = document.querySelector(location.hash);
+    if (target) setTimeout(function () { target.scrollIntoView({ behavior: 'auto' }); }, 0);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "東京 2026｜行程與票券",
+  "short_name": "東京",
+  "description": "東京 9/14–9/17 行程時間、交通節點與票券",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FBF7EF",
+  "theme_color": "#0F4C81",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
