@@ -152,7 +152,7 @@ table.tbl { border-collapse: collapse; width: 100%; font-size: .8125rem; line-he
 .tbl th, .tbl td { padding: .45em .6em; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .tbl th { color: var(--ink-2); font-weight: 600; white-space: nowrap; }
 .tbl td.t, .tbl th.t { white-space: nowrap; font-variant-numeric: tabular-nums; }
-.tbl td:first-child, .tbl th:first-child { white-space: nowrap; }
+.tbl td:first-child, .tbl th:first-child, .tbl .t2 { white-space: nowrap; }
 .tbl tr.hi td { font-weight: 700; }
 /* ===== cards / pages ===== */
 .page { padding-top: var(--sp-5); }
@@ -323,18 +323,18 @@ footer .build:empty { display: none; }
         <tbody>
           <tr class="hi"><td>1 號／主方案</td><td class="t">05:40</td><td class="t">05:45</td><td class="t">06:21</td></tr>
           <tr class="hi"><td>3 號／備援</td><td class="t">06:00</td><td class="t">06:05</td><td class="t">06:41</td></tr>
-          <tr><td>5 號／僅供查閱（不足 2 小時）</td><td class="t">06:20</td><td class="t">06:25</td><td class="t">07:05</td></tr>
+          <tr><td>5 號／僅查閱</td><td class="t">06:20</td><td class="t">06:25</td><td class="t">07:05</td></tr>
         </tbody></table></div>
       <div class="tbl-wrap"><table class="tbl">
-        <thead><tr><th>方案</th><th>餘裕</th><th class="t">池袋 JR 發</th><th>轉乘站・約下車</th><th class="t">Skyliner</th><th class="t">到機場站</th></tr></thead>
+        <thead><tr><th>方案</th><th class="t2">餘裕</th><th class="t">池袋 JR 發</th><th>轉乘站・約下車</th><th class="t">Skyliner</th><th class="t">到機場站</th></tr></thead>
         <tbody>
-          <tr class="hi"><td>A 主方案</td><td>約 40 分</td><td class="t">04:53</td><td>日暮里 約 05:05</td><td class="t">05:45</td><td class="t">06:21</td></tr>
-          <tr><td>B</td><td>約 21 分，看排隊與空位</td><td class="t">05:11</td><td>日暮里 約 05:24</td><td class="t">05:45</td><td class="t">06:21</td></tr>
-          <tr><td>C 上野替代</td><td>約 30 分（含步行 10–15）</td><td class="t">04:53</td><td>JR 上野 約 05:10 → 步行換站</td><td class="t">05:40</td><td class="t">06:21</td></tr>
-          <tr class="hi"><td>D 備援</td><td>約 22 分，須換到票且有位</td><td class="t">05:31</td><td>日暮里 約 05:43</td><td class="t">06:05</td><td class="t">06:41</td></tr>
-          <tr><td>E 上野替代</td><td>約 32 分（含步行 10–15）</td><td class="t">05:11</td><td>JR 上野 約 05:28 → 步行換站</td><td class="t">06:00</td><td class="t">06:41</td></tr>
+          <tr class="hi"><td>A 主方案</td><td class="t2">約 40 分</td><td class="t">04:53</td><td>日暮里 約 05:05</td><td class="t">05:45</td><td class="t">06:21</td></tr>
+          <tr><td>B</td><td class="t2">約 21 分・看排隊</td><td class="t">05:11</td><td>日暮里 約 05:24</td><td class="t">05:45</td><td class="t">06:21</td></tr>
+          <tr><td>C 上野替代</td><td class="t2">約 30 分・含步行</td><td class="t">04:53</td><td>JR 上野 約 05:10 → 步行換站</td><td class="t">05:40</td><td class="t">06:21</td></tr>
+          <tr class="hi"><td>D 備援</td><td class="t2">約 22 分・須有位</td><td class="t">05:31</td><td>日暮里 約 05:43</td><td class="t">06:05</td><td class="t">06:41</td></tr>
+          <tr><td>E 上野替代</td><td class="t2">約 32 分・含步行</td><td class="t">05:11</td><td>JR 上野 約 05:28 → 步行換站</td><td class="t">06:00</td><td class="t">06:41</td></tr>
         </tbody></table></div>
-      <p class="tips">JR 中途站官方列的是發車時間，上表當約略下車時間用。班表 9/13 查核；JR 上野與京成上野是不同車站。</p>
+      <p class="tips">5 號 07:05 到站距起飛不足 2 小時，不列為備援。JR 中途站官方列的是發車時間，上表當約略下車時間用。班表 9/13 查核；JR 上野與京成上野是不同車站。上野替代（C／E）步行換站估 10–15 分。</p>
       <ul class="links">
         <li><a href="https://timetables.jreast.co.jp/2609/timetable/tt0108/0108050.html">JR 池袋平日班表</a>・<a href="https://new-www.keisei.co.jp/keisei/tetudou/skyliner/jp/traffic/skyliner_timetable.php">京成 Skyliner 班表</a>・<a href="https://www.keisei.co.jp/keisei/tetudou/skyliner/jp/traffic/nippori.php">日暮里站內圖</a></li>
         <li><a href="https://www.keisei.co.jp/keisei/tetudou/skyliner/tc/findus/skyliner.php">京成兌換櫃檯時間</a>・<a href="https://www.jal.co.jp/jp/en/inter/airport/nrt/checkin/">JAL 成田櫃檯</a>・<a href="https://www.narita-airport.jp/en/airportguide/inter-dep/">成田出境流程</a></li>
