@@ -4,7 +4,7 @@
    - 版本字串換掉就會裝新 SW、activate 時刪舊 cache；skipWaiting＋clients.claim 讓下次載入就吃到新版。
    - 收到 'nuke' 訊息＝逃生口：清所有 cache 並解除註冊（standalone 沒網址列，頁內按鈕會送這個）。
    VERSION 由 deploy.sh 以時間戳替換；本地開發時是固定字串。 */
-var VERSION = 'tokyo-2026-20260915-1540';
+var VERSION = 'tokyo-2026-20260915-2359';
 var CORE = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png'];
 var NET_TIMEOUT_MS = 2500;
@@ -43,11 +43,11 @@ self.addEventListener('fetch', function (e) {
     }).catch(function () { return null; });
     var slow = new Promise(function (resolve) { setTimeout(function () { resolve(null); }, NET_TIMEOUT_MS); });
     return Promise.race([net, slow]).then(function (fresh) {
-      if (fresh) return fresh;
+      if (fresh && fresh.ok) return fresh; // 404／500 不算「拿到了」，優先退回好好的快取
       return cache.match(req, { ignoreSearch: true }).then(function (hit) {
         if (hit) return hit;
-        if (req.mode === 'navigate') return cache.match('./index.html');
-        return net.then(function (late) { return late || Response.error(); });
+        if (req.mode === 'navigate') return cache.match('./index.html').then(function (i) { return i || fresh || Response.error(); });
+        return fresh || net.then(function (late) { return late || Response.error(); });
       });
     });
   }));

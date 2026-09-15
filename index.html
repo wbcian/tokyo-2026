@@ -48,7 +48,7 @@ code { font-family: ui-monospace, Menlo, monospace; font-size: .9em; background:
 /* ===== header ===== */
 .top { position: static; z-index: 30; background: var(--night); color: var(--night-ink); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
 @media (min-height: 34em) {
-  .top { position: fixed; top: 0; left: 0; right: 0; }
+  .top { position: fixed; top: 0; left: 0; right: 0; max-height: calc(100vh - 3.4rem); max-height: calc(100dvh - 3.4rem - env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
   body { padding-top: var(--top-h, 8.5rem); }
   section[id] { scroll-margin-top: calc(var(--top-h, 8.5rem) + 8px); }
 }
@@ -104,6 +104,7 @@ html.js body[data-view="days"] #view-days > .day:first-of-type { border-top: 0; 
 .day.today .day-head .day-meta::after { content: "・今天"; color: var(--accent); font-weight: 600; }
 .keep { margin: var(--sp-3) 0 var(--sp-4); padding: 9px 13px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); font-size: .8125rem; }
 .keep b { font-variant-numeric: tabular-nums; }
+.nb { white-space: nowrap; }
 .tz-note { margin: 0 0 var(--sp-3); color: var(--ink-2); font-size: .78125rem; }
 /* ===== timeline ===== */
 .tl { margin: 0; container-type: inline-size; }
@@ -118,7 +119,9 @@ html.js body[data-view="days"] #view-days > .day:first-of-type { border-top: 0; 
 .tl-row.fixed .tl-body { border-left-color: var(--indigo); }
 .tl-row.fixed .tl-body::before { width: 11px; height: 11px; left: -6.5px; top: .35em; background: var(--indigo); }
 .tl-row.goal .tl-body::before { background: var(--green); }
-.tl-row.done .tl-body { opacity: .7; }
+.tl-row.done .tl-time { opacity: .6; }
+.tl-row.done .tl-body::before { background: var(--line); }
+.tl-row.done .tl-head h3::after { content: " 已過"; font-size: .72em; font-weight: 500; color: var(--ink-2); }
 .tl > .tl-row:last-child .tl-body { padding-bottom: 6px; }
 .tl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35em .6em; }
 .tl-head h3 { font-size: 1rem; font-weight: 700; }
@@ -142,7 +145,9 @@ html.js body[data-view="days"] #view-days > .day:first-of-type { border-top: 0; 
 .badge-warn  { background: var(--accent); color: #fff; }
 @media (prefers-color-scheme: dark) { .badge-fixed, .badge-goal, .badge-warn { color: #12100D; } }
 /* ===== tables ===== */
-.tbl-wrap { overflow-x: auto; margin: var(--sp-2) 0 var(--sp-3); }
+.tbl-wrap { overflow-x: auto; margin: var(--sp-2) 0 var(--sp-3);
+  background: linear-gradient(to left, var(--surface) 30%, transparent) right center / 28px 100% no-repeat, radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.16), transparent) right center / 12px 100% no-repeat;
+  background-attachment: local, scroll; }
 table.tbl { border-collapse: collapse; width: 100%; font-size: .8125rem; line-height: 1.45; }
 .tbl th, .tbl td { padding: .45em .6em; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .tbl th { color: var(--ink-2); font-weight: 600; white-space: nowrap; }
@@ -222,7 +227,7 @@ footer .build:empty { display: none; }
   </nav>
 
   <details class="sos">
-    <summary>🆘 緊急・9/17 <span class="sum-times">04:20 離店｜04:53 JR｜05:45 日暮里 Skyliner｜08:55 起飛</span></summary>
+    <summary>🆘 緊急・9/17 <span class="sum-times"><span class="nb">04:20 離店</span>｜<span class="nb">04:53 JR</span>｜<span class="nb">05:45 日暮里 Skyliner</span>｜<span class="nb">08:55 起飛</span></span></summary>
     <div class="sos-body">
       <p><b>飯店</b> 東京池袋多美迎天然溫泉飯店（Dormy Inn Ikebukuro）・3-11-11 Higashiikebukuro, Toshima・<a href="tel:+81359565489">📞 +81 3-5956-5489</a></p>
       <p><b>9/17 回程</b> 04:10 起床 → 04:20 離店 → 04:53 池袋 JR 山手線外回り（上野・東京方面）→ 05:05 日暮里 → 05:45 Skyliner 1 號 → 06:21 空港第2ビル → 08:55 JL8663</p>
@@ -245,7 +250,7 @@ footer .build:empty { display: none; }
       <div class="d-row"><h2>9/14</h2><span class="day-meta">週一・第 1 天</span></div>
       <p class="theme">出發日：北門開戶 → 桃園 → 成田 → 池袋</p>
     </header>
-    <p class="keep">要守住：<b>09:30 離開銀行／10:00 機捷直達車／12:45 起飛</b></p>
+    <p class="keep">要守住：<b><span class="nb">09:30 離開銀行</span>／<span class="nb">10:00 機捷直達車</span>／<span class="nb">12:45 起飛</span></b></p>
     <p class="tz-note">起飛前用台灣時間，抵日後用日本時間（日本快 1 小時）。</p>
     <div class="tl">
       <article class="tl-row goal" data-at="2026-09-14T09:30:00+08:00"><div class="tl-time"><time>09:30</time><span class="t-sub">台灣</span></div><div class="tl-body"><div class="tl-head"><h3>離開銀行</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">機捷 A1 台北車站 6 號入口進站；09:50 前到月台。</p></div></article>
@@ -269,7 +274,7 @@ footer .build:empty { display: none; }
       <article class="tl-row"><div class="tl-time"><span class="t">上午</span><span class="t-sub">08:00–11:00</span></div><div class="tl-body"><div class="tl-head"><h3>從池袋出發</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">池袋站找 <b>東武東上線</b>，有站務人員的閘口出示 Klook 動態票（當天才按「立即兌換」）。急行約 30 分到<b>川越站</b>；想接巴士走<b>東口</b>。</p></div></article>
       <article class="tl-row"><div class="tl-time"><span class="t">白天</span><span class="t-sub">11:00–16:00</span></div><div class="tl-body"><div class="tl-head"><h3>川越老街、午餐、神社、咖啡</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">地點與順序不卡，累了就坐下。</p><p class="tl-note">巴士參考（東武小江戶名所巡遊，川越站東口 3 號站牌，平日）：<span class="num">10:00・10:50・11:45・12:45（只到札の辻）・13:20・14:00・14:50・15:40</span>。上車取整理券，下車出示動態票。</p></div></article>
       <article class="tl-row"><div class="tl-time"><span class="t">傍晚</span><span class="t-sub">16:00–18:00</span></div><div class="tl-body"><div class="tl-head"><h3>回東京</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">川越或川越市搭東武東上線<b>「池袋行」</b>；避開往新木場、元町・中華街等直通班次。</p></div></article>
-      <article class="tl-row"><div class="tl-time"><span class="t">晚上</span><span class="t-sub">18:00–</span></div><div class="tl-body"><div class="tl-head"><h3>晚餐、逛街或回飯店</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">看體力：直接逛（原宿／表參道候選見「資訊」分頁）或先回 Dormy Inn。東京鐵塔為可選。</p></div></article>
+      <article class="tl-row"><div class="tl-time"><span class="t">晚上</span><span class="t-sub">18:00–</span></div><div class="tl-body"><div class="tl-head"><h3>晚餐、逛街或回飯店</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">看體力：直接逛（澀谷 Scramble Square 8F／7F 或原宿・表參道，候選見「資訊」分頁）或先回 Dormy Inn。東京鐵塔為可選。</p></div></article>
     </div>
     <p class="tips">券的範圍：池袋 ↔ 川越地區一次來回（沿途不可中途出站）＋川越 ↔ 川越市不限次＋指定區域東武巴士不限次。<b>JR、東京 Metro、西武線不適用</b>；本川越是西武站。詳見「票券」分頁。</p>
   </section>
@@ -281,12 +286,12 @@ footer .build:empty { display: none; }
       <div class="d-row"><h2>9/16</h2><span class="day-meta">週三・第 3 天</span></div>
       <p class="theme">上午筆電，中午到傍晚購物與休息；早點回飯店</p>
     </header>
-    <p class="keep">要守住：<b>19:00–20:00 回飯店，21:00 左右就寢</b>（隔天 04:10 起床）</p>
+    <p class="keep">要守住：<b><span class="nb">19:00–20:00 回飯店</span>，<span class="nb">21:00 左右就寢</span></b>（隔天 04:10 起床）</p>
     <div class="tl">
       <article class="tl-row"><div class="tl-time"><span class="t">上午</span><span class="t-sub">08:00–12:00</span></div><div class="tl-body"><div class="tl-head"><h3>早餐＋筆電約 150 分鐘</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">參考 08:30–11:00；咖啡廳不合適就回飯店做。先選一件今天要完成的事。</p></div></article>
       <article class="tl-row"><div class="tl-time"><span class="t">中午</span><span class="t-sub">12:00–18:00</span></div><div class="tl-body"><div class="tl-head"><h3>午餐、購物、咖啡</h3><span class="badge badge-flex">彈性</span></div><p class="tl-note">銀座（＋有樂町）暫列主要候選。想買：CELINE 包、男裝、高湯包伴手禮、補藥妝／UNIQLO／無印。店家見「資訊」分頁。</p></div></article>
       <article class="tl-row goal" data-at="2026-09-16T19:00:00+09:00"><div class="tl-time"><time>19:00</time><span class="t-sub">–20:00</span></div><div class="tl-body"><div class="tl-head"><h3>晚餐後回飯店</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">泡澡（大浴場時間問櫃台）。</p></div></article>
-      <article class="tl-row goal" data-at="2026-09-16T20:00:00+09:00"><div class="tl-time"><time>20:00</time><span class="t-sub">–21:00</span></div><div class="tl-body"><div class="tl-head"><h3>整理行李、確認明早</h3><span class="badge badge-goal">目標</span></div><p class="tl-note warn">睡前做完：Skyliner 回程 QR 在相簿與本頁都看得到；護照、票券、明早衣物放外面；行動電源與手機充飽；<b>向櫃台確認清晨 04:20 的退房方式與出口</b>；鬧鐘 <b>04:10</b>。</p></div></article>
+      <article class="tl-row goal" data-at="2026-09-16T20:00:00+09:00"><div class="tl-time"><time>20:00</time><span class="t-sub">–21:00</span></div><div class="tl-body"><div class="tl-head"><h3>整理行李、確認明早</h3><span class="badge badge-goal">目標</span></div><p class="tl-note warn">睡前做完：Skyliner 回程 QR 在相簿（解鎖「票券」分頁也有一份）；<b>用訂位資料確認實際承運航空公司與報到櫃檯</b>、看京成官網 Skyliner 當天運行；護照、票券、明早衣物放外面；行動電源與手機充飽；<b>向櫃台確認清晨 04:20 的退房方式與出口</b>；鬧鐘 <b>04:10</b>。</p></div></article>
       <article class="tl-row goal" data-at="2026-09-16T21:00:00+09:00"><div class="tl-time"><time>21:00</time></div><div class="tl-body"><div class="tl-head"><h3>就寢</h3><span class="badge badge-goal">目標</span></div></div></article>
     </div>
   </section>
@@ -298,13 +303,13 @@ footer .build:empty { display: none; }
       <div class="d-row"><h2>9/17</h2><span class="day-meta">週四・第 4 天</span></div>
       <p class="theme">清晨退房 → 日暮里轉 Skyliner → 成田 → 桃園</p>
     </header>
-    <p class="keep">要守住：<b>04:20 離店／04:53 JR／05:45 日暮里 Skyliner／08:55 起飛</b>。已選 A（日暮里）主方案、D 備援。</p>
+    <p class="keep">要守住：<b><span class="nb">04:20 離店</span>／<span class="nb">04:53 JR</span>／<span class="nb">05:45 日暮里 Skyliner</span>／<span class="nb">08:55 起飛</span></b>。已選 A（日暮里）主方案、D 備援。</p>
     <div class="tl">
       <article class="tl-row goal" data-at="2026-09-17T04:10:00+09:00"><div class="tl-time"><time>04:10</time></div><div class="tl-body"><div class="tl-head"><h3>起床</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">只留 10 分鐘盥洗與退房；行李、票券前晚備妥。</p></div></article>
       <article class="tl-row goal" data-at="2026-09-17T04:20:00+09:00"><div class="tl-time"><time>04:20</time></div><div class="tl-body"><div class="tl-head"><h3>離開飯店</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">步行約 15 分 → <b>04:35 到池袋 JR</b>，留約 18 分進站找月台。</p></div></article>
       <article class="tl-row fixed" data-at="2026-09-17T04:53:00+09:00"><div class="tl-time"><time>04:53</time></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">🚃</span>池袋 JR 山手線外回り</h3><span class="badge badge-fixed">固定</span></div><p class="tl-note">往<b>上野・東京方面</b>，表定 7 號月台；約 <b>05:05 日暮里</b>下車。JR 另付費（Suica）。</p><p class="tl-note">錯過 04:53：<span class="num">05:11</span> 也能到日暮里，再問 05:45 或 06:05 有沒有位。首班 04:25；之後 04:53・05:11・05:31・05:43・05:51・05:58。</p></div></article>
       <article class="tl-row fixed" data-at="2026-09-17T05:45:00+09:00"><div class="tl-time"><time>05:45</time></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">🚄</span>日暮里搭 Skyliner 1 號</h3><span class="badge badge-fixed">固定</span><span class="badge badge-warn">尚未劃位</span></div><p class="tl-note">下 JR 後約 40 分鐘：跟京成線／Skyliner 指標走，連絡櫃檯 <b>05:00 開門</b>，出示回程 QR，指定「日暮里上車」與班次。排隊與空位未保證。</p><p class="tl-note">若已坐過日暮里：續坐到上野，步行到京成上野（窗口 05:10 開）搭同一班 05:40 發車。</p></div></article>
-      <article class="tl-row fixed" data-at="2026-09-17T06:21:00+09:00"><div class="tl-time"><time>06:21</time></div><div class="tl-body"><div class="tl-head"><h3>空港第2ビル站下車</h3></div><p class="tl-note">前往第二航廈 3F 出境大廳。JAL 櫃檯一般 07:00 開。</p></div></article>
+      <article class="tl-row fixed" data-at="2026-09-17T06:21:00+09:00"><div class="tl-time"><time>06:21</time></div><div class="tl-body"><div class="tl-head"><h3>空港第2ビル站下車</h3></div><p class="tl-note">前往第二航廈 3F 出境大廳。JAL 櫃檯一般 07:00 開；若承運方不是 JAL，看出境大廳看板找實際櫃檯。</p></div></article>
       <article class="tl-row goal" data-at="2026-09-17T07:55:00+09:00"><div class="tl-time"><time>07:55</time></div><div class="tl-body"><div class="tl-head"><h3>報到完成</h3><span class="badge badge-goal">目標</span></div><p class="tl-note">依 JAL 一般規定換算：07:55 前完成報到、08:25 左右到登機門；實際以登機證／航空公司通知為準。行動電源隨身不託運。</p></div></article>
       <article class="tl-row fixed" data-at="2026-09-17T08:55:00+09:00"><div class="tl-time"><time>08:55</time></div><div class="tl-body"><div class="tl-head"><h3><span class="ico">✈️</span>JL8663 起飛</h3><span class="badge badge-fixed">固定</span></div><p class="tl-note">表定 11:35 抵桃園第二航廈（台灣時間）。</p></div></article>
     </div>
@@ -321,13 +326,13 @@ footer .build:empty { display: none; }
           <tr><td>5 號／僅供查閱（不足 2 小時）</td><td class="t">06:20</td><td class="t">06:25</td><td class="t">07:05</td></tr>
         </tbody></table></div>
       <div class="tbl-wrap"><table class="tbl">
-        <thead><tr><th>方案</th><th class="t">池袋 JR 發</th><th>轉乘站・約下車</th><th class="t">Skyliner</th><th class="t">到機場站</th><th>餘裕</th></tr></thead>
+        <thead><tr><th>方案</th><th>餘裕</th><th class="t">池袋 JR 發</th><th>轉乘站・約下車</th><th class="t">Skyliner</th><th class="t">到機場站</th></tr></thead>
         <tbody>
-          <tr class="hi"><td>A 主方案</td><td class="t">04:53</td><td>日暮里 約 05:05</td><td class="t">05:45</td><td class="t">06:21</td><td>約 40 分</td></tr>
-          <tr><td>B</td><td class="t">05:11</td><td>日暮里 約 05:24</td><td class="t">05:45</td><td class="t">06:21</td><td>約 21 分，看排隊與空位</td></tr>
-          <tr><td>C 上野替代</td><td class="t">04:53</td><td>JR 上野 約 05:10 → 步行換站</td><td class="t">05:40</td><td class="t">06:21</td><td>約 30 分（含步行 10–15）</td></tr>
-          <tr class="hi"><td>D 備援</td><td class="t">05:31</td><td>日暮里 約 05:43</td><td class="t">06:05</td><td class="t">06:41</td><td>約 22 分，須換到票且有位</td></tr>
-          <tr><td>E 上野替代</td><td class="t">05:11</td><td>JR 上野 約 05:28 → 步行換站</td><td class="t">06:00</td><td class="t">06:41</td><td>約 32 分（含步行 10–15）</td></tr>
+          <tr class="hi"><td>A 主方案</td><td>約 40 分</td><td class="t">04:53</td><td>日暮里 約 05:05</td><td class="t">05:45</td><td class="t">06:21</td></tr>
+          <tr><td>B</td><td>約 21 分，看排隊與空位</td><td class="t">05:11</td><td>日暮里 約 05:24</td><td class="t">05:45</td><td class="t">06:21</td></tr>
+          <tr><td>C 上野替代</td><td>約 30 分（含步行 10–15）</td><td class="t">04:53</td><td>JR 上野 約 05:10 → 步行換站</td><td class="t">05:40</td><td class="t">06:21</td></tr>
+          <tr class="hi"><td>D 備援</td><td>約 22 分，須換到票且有位</td><td class="t">05:31</td><td>日暮里 約 05:43</td><td class="t">06:05</td><td class="t">06:41</td></tr>
+          <tr><td>E 上野替代</td><td>約 32 分（含步行 10–15）</td><td class="t">05:11</td><td>JR 上野 約 05:28 → 步行換站</td><td class="t">06:00</td><td class="t">06:41</td></tr>
         </tbody></table></div>
       <p class="tips">JR 中途站官方列的是發車時間，上表當約略下車時間用。班表 9/13 查核；JR 上野與京成上野是不同車站。</p>
       <ul class="links">
@@ -361,7 +366,7 @@ footer .build:empty { display: none; }
         <li>買的是<b>兩張單程票</b>（成人 1 人），回程 京成上野 → 成田機場第 2・3 航廈站。<b>尚未劃位</b>：QR 是兌換憑證，要在兌換處換成指定班次的票。</li>
         <li>兌換處：<b>日暮里</b> JR／京成連絡櫃檯（<b>05:00 開</b>）、京成上野（05:10 開）、成田機場櫃台。出示 QR 或購買詳情畫面；指定「日暮里上車、1 號 05:45」。</li>
         <li>票券服務有效期限 2026/10/13。去程票（9/14 成田 → 京成上野）為另一張獨立單程票。</li>
-        <li>QR 在相簿也存了一份；掃描前把螢幕調亮。</li>
+        <li>QR 主備份在相簿；解鎖本頁票券區也看得到。掃描前把螢幕調亮。</li>
       </ul>
     </div>
 
@@ -436,7 +441,7 @@ footer .build:empty { display: none; }
           <tr><td>桃園 → 成田</td><td>JL8664</td><td class="t">9/14 12:45（台）</td><td class="t">9/14 17:15（日）</td></tr>
           <tr><td>成田 → 桃園</td><td>JL8663</td><td class="t">9/17 08:55（日）</td><td class="t">9/17 11:35（台）</td></tr>
         </tbody></table></div>
-      <p class="tips">兩端皆第二航廈；日本航空承運。</p>
+      <p class="tips">兩端皆第二航廈；銷售航空公司為日本航空，實際承運與報到櫃檯以訂位／登機證為準。</p>
     </div>
 
     <div class="card">
@@ -455,8 +460,10 @@ footer .build:empty { display: none; }
     <div class="card">
       <h3>🛍️ 逛街候選</h3>
       <p class="tips">想買：後背包、斜背小包、衣服（BEAMS、green label relaxing）、On 跑鞋、CELINE 包、高湯包伴手禮、藥妝／UNIQLO／無印。都是候選，不是必走。</p>
-      <h4>原宿・表參道・澀谷</h4>
+      <h4>澀谷・原宿・表參道</h4>
+      <p class="tips">9/15 晚推薦（未定案）：澀谷站直結 Shibuya Scramble Square，8F UNITED ARROWS → KURA CHIKA by PORTER → 7F ÉDIFICE、TOMORROWLAND；商店 10:00–21:00。</p>
       <div class="chips">
+        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Shibuya%20Scramble%20Square">🗺️ Shibuya Scramble Square</a>
         <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=BEAMS%20%E5%8E%9F%E5%AE%BF">🗺️ BEAMS 原宿</a>
         <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=PORTER%20OMOTESANDO%20%E7%A5%9E%E5%AE%AE%E5%89%8D5-6-8">🗺️ PORTER 表參道</a>
         <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=On%20Store%20Tokyo%20Cat%20Street%20%E7%A5%9E%E5%AE%AE%E5%89%8D5-17-27">🗺️ On Cat Street</a>
@@ -539,9 +546,9 @@ footer .build:empty { display: none; }
   measureTop(); window.addEventListener('resize', measureTop);
   if (window.ResizeObserver) new ResizeObserver(measureTop).observe(top);
 
-  // ---- 「現在」：?now=2026-09-17T03:50:00+09:00 可覆寫（測試用）
+  // ---- 「現在」：?now=2026-09-17T03:50:00%2B09:00 可覆寫（測試用；+ 要寫 %2B）
   var NOW_OVERRIDE = null;
-  try { var q = new URLSearchParams(location.search).get('now'); if (q) { var t = new Date(q); if (!isNaN(t.getTime())) NOW_OVERRIDE = t; } } catch (e) {}
+  try { var q = new URLSearchParams(location.search).get('now'); if (q) { q = q.replace(/ (?=\d{2}:\d{2}$)/, '+'); var t = new Date(q); if (!isNaN(t.getTime())) NOW_OVERRIDE = t; } } catch (e) {}
   function now() { return NOW_OVERRIDE ? new Date(NOW_OVERRIDE.getTime() + (Date.now() - NOW_BASE)) : new Date(); }
   var NOW_BASE = Date.now();
   var fmtJST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -550,18 +557,21 @@ footer .build:empty { display: none; }
 
   // ---- 日期 section 狀態（已過／今天）＋ 今天是 d 幾
   var days = qsa('#view-days .day');
-  var todayId = null;
-  (function () {
+  var todayId = null, curDay = null;
+  // 可重入：iOS 主畫面 app 從 app switcher 回來不會重新載入，9/16 晚上開著到 9/17 清晨，「今天」要跟著跨日。
+  function refreshDays() {
     var t = todayJST();
+    if (t === curDay) return;
+    curDay = t; todayId = null;
     days.forEach(function (s) {
       var d = s.getAttribute('data-date');
       s.classList.toggle('past', d < t);
       s.classList.toggle('today', d === t);
       if (d === t) todayId = s.id;
     });
-    var btn = document.getElementById('btn-today');
-    if (todayId) btn.hidden = false;
-  })();
+    document.getElementById('btn-today').hidden = !todayId;
+  }
+  refreshDays();
 
   // ---- 分頁路由：hash 決定 view；原生錨點，不攔連結
   var tabs = { days: document.getElementById('tab-days'), tickets: document.getElementById('tab-tickets'), info: document.getElementById('tab-info') };
@@ -591,6 +601,7 @@ footer .build:empty { display: none; }
   var banner = document.getElementById('banner'), bnLink = document.getElementById('bn-link');
   var nowLine = document.createElement('p'); nowLine.className = 'now-line';
   function tick() {
+    refreshDays();
     var n = now();
     var next = null;
     rows.forEach(function (r) { r.el.classList.toggle('done', r.at < n); if (!next && r.at > n) next = r; });
@@ -611,6 +622,8 @@ footer .build:empty { display: none; }
     } else { banner.hidden = true; if (nowLine.parentNode) nowLine.parentNode.removeChild(nowLine); }
   }
   tick(); setInterval(tick, 60000);
+  // 手機喚醒／回前景立刻重算，不等下一個 60 秒
+  ['visibilitychange', 'pageshow', 'focus'].forEach(function (ev) { window.addEventListener(ev, function () { if (document.visibilityState !== 'hidden') tick(); }); });
 
   // ---- 票券：加密 blob 載入與解鎖
   var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
@@ -618,7 +631,7 @@ footer .build:empty { display: none; }
   var lockMsg = document.getElementById('lock-msg'), lockForm = document.getElementById('lock-form'), vault = document.getElementById('vault'), lockCard = document.getElementById('lock');
   function setMsg(t, err) { lockMsg.textContent = t; lockMsg.classList.toggle('err', !!err); }
   function ensureBlob() {
-    if (blobState !== 'idle') return;
+    if (blobState === 'loading' || blobState === 'ready') return; // idle／missing／nocrypto 都允許重抓
     blobState = 'loading';
     if (!window.isSecureContext || !(window.crypto && crypto.subtle)) { blobState = 'nocrypto'; setMsg('這個環境不能解密（需要 https 或 localhost），請用正式網址開。', true); return; }
     fetch('./private.enc.json', { cache: 'no-cache' }).then(function (r) {
@@ -627,7 +640,7 @@ footer .build:empty { display: none; }
       return r.json();
     }).then(function (j) {
       if (!j) return;
-      blob = j; blobState = 'ready';
+      blob = j; blobState = 'ready'; document.getElementById('btn-unlock').disabled = false;
       var g = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(blob.generated || ''); setMsg('票券資料版本 ' + (g ? (+g[2]) + '/' + (+g[3]) + ' ' + g[4] + ':' + g[5] : '?') + '。輸入口令解鎖。');
       var saved = lsGet('pass');
       if (saved) unlock(saved, false);
@@ -745,6 +758,7 @@ footer .build:empty { display: none; }
   // ---- 更新／清快取（逃生口：standalone 沒網址列）
   document.getElementById('btn-reload').addEventListener('click', function () { location.reload(); });
   document.getElementById('btn-nuke').addEventListener('click', function () {
+    if (navigator.onLine === false && !confirm('現在看起來沒有網路。清掉快取後，恢復連線前這個 app 會完全打不開，仍要繼續嗎？')) return;
     var done = function () { location.reload(); };
     var p = Promise.resolve();
     if (window.caches) p = caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); });
