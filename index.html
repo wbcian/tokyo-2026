@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-Hant" data-sw>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -628,7 +628,7 @@ footer .build:empty { display: none; }
     }).then(function (j) {
       if (!j) return;
       blob = j; blobState = 'ready';
-      setMsg('票券資料版本 ' + (blob.generated || '?') + '。輸入口令解鎖。');
+      var g = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(blob.generated || ''); setMsg('票券資料版本 ' + (g ? (+g[2]) + '/' + (+g[3]) + ' ' + g[4] + ':' + g[5] : '?') + '。輸入口令解鎖。');
       var saved = lsGet('pass');
       if (saved) unlock(saved, false);
     }).catch(function (e) { blobState = 'idle'; setMsg('票券資料載入失敗（' + e.message + '），檢查網路後再切回本頁。', true); });
@@ -687,7 +687,8 @@ footer .build:empty { display: none; }
   }
   function renderVault(d) {
     vault.innerHTML = '';
-    var head = el('div', { 'class': 'vault-head' }, [el('span', { text: '🔓 已解鎖・資料版本 ' + ((d.meta && d.meta.generatedAt) || blob.generated || '?') })]);
+    var gen = (d.meta && d.meta.generatedAt) || blob.generated || ''; var gm = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(gen);
+    var head = el('div', { 'class': 'vault-head' }, [el('span', { text: '🔓 已解鎖・資料版本 ' + (gm ? (+gm[2]) + '/' + (+gm[3]) + ' ' + gm[4] + ':' + gm[5] : (gen || '?')) })]);
     var lockBtn = el('button', { type: 'button', text: '🔒 鎖上並忘記口令' });
     lockBtn.addEventListener('click', function () { lsDel('pass'); vault.innerHTML = ''; vault.hidden = true; lockCard.hidden = false; document.getElementById('pass').value = ''; setMsg('已鎖上。'); });
     head.appendChild(lockBtn); vault.appendChild(head);
